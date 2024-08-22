@@ -1,5 +1,3 @@
-// https://github.com/dwyl/english-words
-
 #include <sodium/randombytes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,7 +80,7 @@ int main (int argc, char **argv) {
     generate_characters(character_set);
 
     printf("\n");
-    fseek(words, 0, SEEK_SET); // Reset pointer to beginning of file 
+    fseek(words, 0, SEEK_SET); // Reset pointer to beginning of file //
     fclose(words);
     /** printf("LINE TOTAL: %li\n", line_total); **/
 }
