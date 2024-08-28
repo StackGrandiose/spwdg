@@ -49,26 +49,34 @@ int main (int argc, char **argv) {
     FILE *words;
 
     int index;
-    int f_flag = 0; 
+    int w_flag = 0; 
     int c;
     opterr = 0;
 
     char character_set[28] = "!@#$%^&*()_-+={}[]|~`<,>.?:;";
     char letter_set[26] = "abcdefghijklmnopqrstuvwxyz";
 
-    while ((c = getopt (argc, argv, "n")) != -1)
+    while ((c = getopt (argc, argv, "wh")) != -1)
         switch(c) {
-            case 'n':
+            case 'w':
+                w_flag = 1;
+                break;
+            case 'h':
+                printf("usage: spwdg [options]\n"
+                        "-h                 shows this help text\n"
+                        "-w                 generates passwords using words\n");
+                return 0;
             case '?':
                 if (optopt == 'c')
                     fprintf (stderr, "Option -%c requires an argument.\n", optopt);
                 else if (isprint (optopt))
-                    fprintf (stderr, "Unknown option '-%c',\n", optopt);
+                    fprintf (stderr, "Unknown option '-%c'.\n", optopt);
                 else
-                    fprintf (stderr, "Unknown option character '\\x%x.\n", optopt);
+                    fprintf(stderr,"Unknown option character '\\x%x'.\n", optopt);
                 return 1;
             default:
                 abort();
+
         }
 
     if (sodium_init() < 0) return 1;    
@@ -81,7 +89,7 @@ int main (int argc, char **argv) {
     temp[1] = '\0'; // Makes the array a string
 
     r = randombytes_uniform(line_total + 1); // Generates random line number to use for string
-                                             
+
     while ((a = getc(words)) != EOF) {
         int i;
         temp[0] = a;
@@ -94,12 +102,14 @@ int main (int argc, char **argv) {
 
     randomize_case(str);
     generate_integers();
-    generate_characters(letter_set);
-    // printf("%s", str);
+    if (w_flag == 1) {
+        printf("%s", str);
+    }
+    else  {
+        generate_characters(letter_set);
+    }
     generate_characters(character_set);
-
     printf("\n");
-    fseek(words, 0, SEEK_SET); // Reset pointer to beginning of file //
     fclose(words);
 }
 
