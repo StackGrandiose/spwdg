@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sodium.h>
+#include <unistd.h>
 #include <ctype.h> //To Upper
 
 
@@ -34,6 +35,8 @@ void generate_integers(void) {
 }
 
 void generate_characters(char *set) {
+    int random_length;
+    // while (random_length <= 3) random_length 
     for (int i = 0; i < 5; i++) {
         int random_character = randombytes_uniform(strlen(set));
         printf("%c", set[random_character]);
@@ -41,12 +44,32 @@ void generate_characters(char *set) {
 }
 
 int main (int argc, char **argv) {
-    char c, arg, str[20];
-    FILE *words;
+    char a, arg, str[20];
     long line_counter, line_total, r;
+    FILE *words;
+
+    int index;
+    int f_flag = 0; 
+    int c;
+    opterr = 0;
 
     char character_set[28] = "!@#$%^&*()_-+={}[]|~`<,>.?:;";
     char letter_set[26] = "abcdefghijklmnopqrstuvwxyz";
+
+    while ((c = getopt (argc, argv, "n")) != -1)
+        switch(c) {
+            case 'n':
+            case '?':
+                if (optopt == 'c')
+                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                else if (isprint (optopt))
+                    fprintf (stderr, "Unknown option '-%c',\n", optopt);
+                else
+                    fprintf (stderr, "Unknown option character '\\x%x.\n", optopt);
+                return 1;
+            default:
+                abort();
+        }
 
     if (sodium_init() < 0) return 1;    
     words = fopen("word_list.txt", "r");
@@ -59,19 +82,20 @@ int main (int argc, char **argv) {
 
     r = randombytes_uniform(line_total + 1); // Generates random line number to use for string
                                              
-    while ((c = getc(words)) != EOF) {
+    while ((a = getc(words)) != EOF) {
         int i;
-        temp[0] = c;
-        if ((r == i) && (c != '\n')) { 
+        temp[0] = a;
+        if ((r == i) && (a != '\n')) { 
             strcat(str, temp); 
         }
-        if (c == '\n') {
+        if (a == '\n') {
             i++;        }
     }
 
     randomize_case(str);
     generate_integers();
-    printf("%s", str);
+    generate_characters(letter_set);
+    // printf("%s", str);
     generate_characters(character_set);
 
     printf("\n");

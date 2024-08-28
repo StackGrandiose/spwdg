@@ -1,7 +1,6 @@
-password: password.c
-	gcc -o output password.c -lsodium
-install: all
-	cp output spwdg
+main: main.c
+	gcc -o spwdg main.c -lsodium
+install:
 	sudo mv spwdg /usr/bin	
 uninstall: 
 	sudo rm /usr/bin/spwdg
